@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AirlinesTask</string>
+
+    <string name="start_task">Start Task</string>
+    <string name="stop_task">Stop Task</string>
+
+</resources>
