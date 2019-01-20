@@ -6,6 +6,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.myownprojects.manikandans.airlinestask.R;

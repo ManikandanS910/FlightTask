@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -31,6 +32,7 @@ import com.myownprojects.manikandans.airlinestask.ui.model.TopListResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -122,7 +124,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
 
                 }
 
-                @Override
+                /*@Override
                 public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
                     Bitmap icon;
@@ -149,11 +151,13 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
                         }
                     }
                     super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }
+                }*/
 
                 @Override
                 public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
                     if (direction == ItemTouchHelper.RIGHT) {
+
+                        startTimer(5);
 
                     } else  if(direction == ItemTouchHelper.LEFT){
 
@@ -166,6 +170,22 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             homeActivity.hideProgress();
 
         }
+    }
+
+    private void startTimer(int noOfMinutes) {
+        new CountDownTimer(noOfMinutes, 1000) {
+            public void onTick(long millisUntilFinished) {
+                long millis = millisUntilFinished;
+
+                String hms = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+                usersListAdapter.setTime(hms);
+
+            }
+            public void onFinish() {
+                usersListAdapter.setTime("Task completed!!");
+            }
+        }.start();
+
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.myownprojects.manikandans.airlinestask.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -82,7 +83,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, API
                 if(s.length() > 0){
                     if(userName != null && userName.getText().toString().trim().length() > 0){
                         signIn.setEnabled(true);
-                        signIn.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                        signIn.setBackground(getResources().getDrawable(R.drawable.button_shape));
                     }
                 }
             }
@@ -113,7 +114,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener, API
                 LoginResponseModel loginResponseModel = (LoginResponseModel) response.body();
                 Log.e("Message>>",""+loginResponseModel.getSuccessMessage());
 
-                homeActivity.openFragment(new FlightListFragment(), true);
+                if(userName.getText().toString().trim().equals(loginResponseModel.getData().getUserId())) {
+
+                    homeActivity.openFragment(new FlightListFragment(), true);
+                } else {
+                    Snackbar snackbar = Snackbar.make(signIn, "Enter valid User ID", Snackbar.LENGTH_LONG);
+                    snackbar.show();
+                }
 
                 break;
         }
