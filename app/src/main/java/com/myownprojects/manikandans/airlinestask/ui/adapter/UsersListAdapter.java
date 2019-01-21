@@ -1,23 +1,18 @@
 package com.myownprojects.manikandans.airlinestask.ui.adapter;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.os.CountDownTimer;
+import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.TextView;
 
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
+import com.myownprojects.manikandans.airlinestask.utility.CustomRunnable;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by manikandans on 17/01/19.
@@ -27,12 +22,16 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
 
     private Context context;
     private List<Datum> flightListData;
+    private Handler handler = new Handler();
+
+    private int position;
 
     private UsersViewHolder holder;
 
     public UsersListAdapter(Context context, List<Datum> flightListData){
         this.context = context;
         this.flightListData = flightListData;
+
     }
 
     @Override
@@ -45,13 +44,20 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
     public void onBindViewHolder(UsersViewHolder holder, int position) {
 
         this.holder = holder;
+        this.position = position;
         holder.taskName.setText(flightListData.get(position).getTaskName());
         holder.duration.setText(""+ flightListData.get(position).getTaskDuration());
         holder.passengerName.setText(flightListData.get(position).getName());
 //        holder.swipeToSkip.setText(flightListData.get(position).getTaskName());
 
-        start_countDown("5", "0", holder.duration);
+//        start_countDown("5", "0", holder.duration);
 
+        holder.bind();
+
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public void setTime(String hms){
@@ -63,7 +69,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         return flightListData.size();
     }
 
-    private void start_countDown(String start, String stop, final TextView txt_timeleft) {
+    /*private void start_countDown(String start, String stop, final TextView txt_timeleft) {
         try {
             //Log.e("hetal",start+"....."+stop);
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -153,7 +159,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         }catch (Exception ex){
             ex.printStackTrace();
         }
-    }
+    }*/
 
     public class UsersViewHolder extends RecyclerView.ViewHolder {
 
@@ -162,6 +168,8 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         TextView passengerName;
         TextView swipeToSkip;
 
+        CustomRunnable customRunnable;
+
         public UsersViewHolder(View itemView) {
             super(itemView);
 
@@ -169,6 +177,17 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
             duration = itemView.findViewById(R.id.duartion);
             passengerName = itemView.findViewById(R.id.passenger_name);
             swipeToSkip = itemView.findViewById(R.id.swipe_to_skip);
+
+            customRunnable = new CustomRunnable(handler, duration, flightListData.get(position).getTaskDuration());
+        }
+
+        public void bind() {
+
+            handler.removeCallbacks(customRunnable);
+            customRunnable.holder = duration;
+            customRunnable.millisUntilFinished = 10000 * getAdapterPosition(); //Current time - received time
+            handler.postDelayed(customRunnable, 100);
+
         }
 
     }

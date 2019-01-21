@@ -14,17 +14,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.google.gson.Gson;
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.ui.HomeActivity;
 import com.myownprojects.manikandans.airlinestask.ui.api.APIClient;
 import com.myownprojects.manikandans.airlinestask.ui.api.APIResult;
 import com.myownprojects.manikandans.airlinestask.ui.api.ConstantType;
-import com.myownprojects.manikandans.airlinestask.ui.model.LoginRequestModel;
 import com.myownprojects.manikandans.airlinestask.ui.model.LoginResponseModel;
 
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Response;
 

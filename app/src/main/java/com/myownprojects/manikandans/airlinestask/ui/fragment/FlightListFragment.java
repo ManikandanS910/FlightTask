@@ -1,12 +1,8 @@
 package com.myownprojects.manikandans.airlinestask.ui.fragment;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -21,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.myownprojects.manikandans.airlinestask.R;
+import com.myownprojects.manikandans.airlinestask.db.FlightListDatabase;
 import com.myownprojects.manikandans.airlinestask.ui.HomeActivity;
 import com.myownprojects.manikandans.airlinestask.ui.adapter.TopListAdapter;
 import com.myownprojects.manikandans.airlinestask.ui.adapter.UsersListAdapter;
@@ -97,6 +94,13 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     public void serviceResult(ConstantType constantType, Response response) {
         TopListResponse topListResponse = (TopListResponse) response.body();
         if(topListResponse != null && topListResponse.getCount() > 0 && topListResponse.getData().size() > 0) {
+
+            FlightListDatabase db = Room.databaseBuilder(context,FlightListDatabase.class, "user_db")
+                    .allowMainThreadQueries().build();
+
+
+
+
 
             usersListAdapter = new UsersListAdapter(context, topListResponse.getData());
             RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
