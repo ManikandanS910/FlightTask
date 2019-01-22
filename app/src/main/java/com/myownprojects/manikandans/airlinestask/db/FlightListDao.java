@@ -8,6 +8,8 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Transaction;
 import android.arch.persistence.room.Update;
 
+import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
+
 import java.util.List;
 
 @Dao
@@ -21,11 +23,11 @@ public interface FlightListDao {
 
     @Delete
     void delete(FlightListTableResponse flightListTableResponse);
-    @Query("SELECT * FROM flight_table")
-    List<FlightListTableResponse> getAll();
+    @Query("SELECT * FROM flight_list_db")
+    List<Datum> getAll();
 
     @Insert
-    void insertAll(List<FlightListTableResponse> users);
+    void insertAll(List<Datum> users);
 
     /*@Transaction
     void updateTable(List<FlightListTableResponse> users) {

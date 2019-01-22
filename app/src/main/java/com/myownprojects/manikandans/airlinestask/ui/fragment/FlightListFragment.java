@@ -95,11 +95,14 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         TopListResponse topListResponse = (TopListResponse) response.body();
         if(topListResponse != null && topListResponse.getCount() > 0 && topListResponse.getData().size() > 0) {
 
-            FlightListDatabase db = Room.databaseBuilder(context,FlightListDatabase.class, "user_db")
-                    .allowMainThreadQueries().build();
+//            FlightListDatabase db = Room.databaseBuilder(context,FlightListDatabase.class, "user_db").allowMainThreadQueries().build();
 
+            FlightListDatabase flightListDatabase = FlightListDatabase.getInstance(context);
+            flightListDatabase.flightListDao().insertAll(topListResponse.getData());
 
+            List<Datum> datumList = flightListDatabase.flightListDao().getAll();
 
+            Log.e("Size in table", "---"+datumList.size());
 
 
             usersListAdapter = new UsersListAdapter(context, topListResponse.getData());

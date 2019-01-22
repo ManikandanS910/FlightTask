@@ -1,119 +1,178 @@
 package com.myownprojects.manikandans.airlinestask.ui.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.TypeConverters;
+import android.support.annotation.NonNull;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.myownprojects.manikandans.airlinestask.utility.DateConverter;
 
+@Entity(tableName = "flight_list_db")
 public class Datum {
     @SerializedName("id")
     @Expose
+    @PrimaryKey
+    @NonNull
+    @ColumnInfo(name = "id")
     private String id;
+    @ColumnInfo(name = "taskScheduleId")
     @SerializedName("taskScheduleId")
     @Expose
     private Integer taskScheduleId;
+    @ColumnInfo(name ="flightSchedulesId")
     @SerializedName("flightSchedulesId")
     @Expose
     private Integer flightSchedulesId;
+    @ColumnInfo(name ="flightSchedulesDate")
     @SerializedName("flightSchedulesDate")
     @Expose
     private Long flightSchedulesDate;
+    @ColumnInfo(name ="arrFlightNumber")
     @SerializedName("arrFlightNumber")
     @Expose
     private String arrFlightNumber;
+    @ColumnInfo(name ="depFlightNumber")
     @SerializedName("depFlightNumber")
     @Expose
     private String depFlightNumber;
+    @ColumnInfo(name ="standardArrivalTime")
     @SerializedName("standardArrivalTime")
     @Expose
     private Long standardArrivalTime;
+    @ColumnInfo(name ="standardDepartureTime")
     @SerializedName("standardDepartureTime")
     @Expose
     private Long standardDepartureTime;
+    @ColumnInfo(name ="estimatedArrivalTime")
     @SerializedName("estimatedArrivalTime")
     @Expose
     private Long estimatedArrivalTime;
+    @ColumnInfo(name ="estimatedDepartureTime")
     @SerializedName("estimatedDepartureTime")
     @Expose
     private Long estimatedDepartureTime;
+    @ColumnInfo(name ="flightType")
     @SerializedName("flightType")
     @Expose
     private Integer flightType;
+    @ColumnInfo(name ="userId")
     @SerializedName("userId")
     @Expose
     private Integer userId;
+    @ColumnInfo(name ="resourceMappingId")
     @SerializedName("resourceMappingId")
     @Expose
     private Integer resourceMappingId;
+    @ColumnInfo(name ="name")
     @SerializedName("name")
     @Expose
     private String name;
+    @ColumnInfo(name ="taskScheduleDetailId")
     @SerializedName("taskScheduleDetailId")
     @Expose
     private Integer taskScheduleDetailId;
+    @ColumnInfo(name ="taskId")
     @SerializedName("taskId")
     @Expose
     private Integer taskId;
+    @ColumnInfo(name ="taskName")
     @SerializedName("taskName")
     @Expose
     private String taskName;
+    @ColumnInfo(name ="taskDuration")
     @SerializedName("taskDuration")
     @Expose
     private Integer taskDuration;
+    @ColumnInfo(name ="taskSequenceNumber")
     @SerializedName("taskSequenceNumber")
     @Expose
     private Integer taskSequenceNumber;
+    @ColumnInfo(name ="arrivalDepartureType")
     @SerializedName("arrivalDepartureType")
     @Expose
     private Integer arrivalDepartureType;
+    @ColumnInfo(name ="activityStartTime")
     @SerializedName("activityStartTime")
     @Expose
     private Integer activityStartTime;
+    @ColumnInfo(name ="optional")
     @SerializedName("optional")
     @Expose
     private Integer optional;
+    @ColumnInfo(name ="taskStatusId")
     @SerializedName("taskStatusId")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskStatusId;
+    @ColumnInfo(name ="taskActualStartTime")
     @SerializedName("taskActualStartTime")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskActualStartTime;
+    @ColumnInfo(name ="taskActualEndTime")
     @SerializedName("taskActualEndTime")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskActualEndTime;
+    @ColumnInfo(name ="taskModifiedStartTime")
     @SerializedName("taskModifiedStartTime")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskModifiedStartTime;
+    @ColumnInfo(name ="taskModifiedEndTime")
     @SerializedName("taskModifiedEndTime")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskModifiedEndTime;
+    @ColumnInfo(name ="taskDelayCodeId")
     @SerializedName("taskDelayCodeId")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskDelayCodeId;
+    @ColumnInfo(name ="taskDelayNumericCode")
     @SerializedName("taskDelayNumericCode")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskDelayNumericCode;
+    @ColumnInfo(name ="taskDelayAlphabeticCode")
     @SerializedName("taskDelayAlphabeticCode")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskDelayAlphabeticCode;
+    @ColumnInfo(name ="taskDelayCodeDescription")
     @SerializedName("taskDelayCodeDescription")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskDelayCodeDescription;
+    @ColumnInfo(name ="taskDelayReason")
     @SerializedName("taskDelayReason")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object taskDelayReason;
+    @ColumnInfo(name ="actualArrivalTime")
     @SerializedName("actualArrivalTime")
     @Expose
     private Long actualArrivalTime;
+    @ColumnInfo(name ="actualDepartureTime")
     @SerializedName("actualDepartureTime")
     @Expose
     private Long actualDepartureTime;
+    @ColumnInfo(name ="taskSkipped")
     @SerializedName("taskSkipped")
     @Expose
     private Boolean taskSkipped;
     @SerializedName("ataWeb")
+    @ColumnInfo(name ="ataWeb")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object ataWeb;
+    @ColumnInfo(name ="atdWeb")
     @SerializedName("atdWeb")
     @Expose
+    @TypeConverters(DateConverter.class)
     private Object atdWeb;
 
     public String getId() {

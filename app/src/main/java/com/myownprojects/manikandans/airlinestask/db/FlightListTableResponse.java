@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-@Entity(tableName = "flight_table")
+@Entity(tableName = "flight_list_db")
 public class FlightListTableResponse {
 
     @PrimaryKey
@@ -78,7 +78,7 @@ public class FlightListTableResponse {
     
     private Integer optional;
     @ColumnInfo(name ="taskStatusId")
-    
+
     private Object taskStatusId;
     @ColumnInfo(name ="taskActualStartTime")
     
