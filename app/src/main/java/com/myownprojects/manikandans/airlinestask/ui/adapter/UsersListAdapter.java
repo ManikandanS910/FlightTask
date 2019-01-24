@@ -1,8 +1,11 @@
 package com.myownprojects.manikandans.airlinestask.ui.adapter;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +14,12 @@ import android.widget.TextView;
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
 import com.myownprojects.manikandans.airlinestask.utility.CustomRunnable;
+import com.myownprojects.manikandans.airlinestask.utility.TimerService;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by manikandans on 17/01/19.
@@ -46,7 +53,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         this.holder = holder;
         this.position = position;
         holder.taskName.setText(flightListData.get(position).getTaskName());
-        holder.duration.setText(""+ flightListData.get(position).getTaskDuration());
+        holder.duration.setText(""+ flightListData.get(position).getActivityStartTime());
         holder.passengerName.setText(flightListData.get(position).getName());
 //        holder.swipeToSkip.setText(flightListData.get(position).getTaskName());
 
@@ -67,6 +74,36 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
     @Override
     public int getItemCount() {
         return flightListData.size();
+    }
+
+    public void startTimerService(int position){
+        Intent intent = new Intent(context, TimerService.class);
+        intent.putExtra("startTime", TimeUnit.MINUTES.toMillis(flightListData.get(position).getActivityStartTime()));
+        context.startService(intent);
+
+
+
+    }
+
+    public BroadcastReceiver br = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateGUI(intent); // or whatever method used to update your GUI fields
+        }
+    };
+
+    private void updateGUI(Intent intent) {
+        if (intent.getExtras() != null) {
+            long millisUntilFinished = intent.getLongExtra("countdown", 0);
+            Log.i(TAG, "Countdown seconds remaining: " + millisUntilFinished);
+            String durationText = String.format("%d min : %02d sec",
+                    TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished),
+                    TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))
+            );
+            holder.duration.setText(durationText);
+            Log.e("Time in adapter",durationText);
+        }
     }
 
     /*private void start_countDown(String start, String stop, final TextView txt_timeleft) {

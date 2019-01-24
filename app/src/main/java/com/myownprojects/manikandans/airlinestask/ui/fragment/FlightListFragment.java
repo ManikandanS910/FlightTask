@@ -3,6 +3,7 @@ package com.myownprojects.manikandans.airlinestask.ui.fragment;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -47,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
 import retrofit2.Response;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by manikandans on 13/01/19.
@@ -93,8 +96,10 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         flightList = view.findViewById(R.id.flight_list);
 
         Log.e("UserLoggedIn", ""+SharedPrefs.getBoolean(context, "UserLoggedIn"));
-        if(!SharedPrefs.getBoolean(context, "UserLoggedIn"))
+        if(!SharedPrefs.getBoolean(context, "UserLoggedIn")) {
+            SharedPrefs.putBoolean(context, "UserLoggedIn", true);
             flightListAPI();
+        }
         else
             populateUIFromDB();
 
@@ -144,7 +149,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
             @Override
             public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-                    /*Bitmap icon;
+                    Bitmap icon;
                     if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
 
                         View itemView = viewHolder.itemView;
@@ -166,28 +171,31 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
                             RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
                             c.drawBitmap(icon,null,icon_dest,p);
                         }
-                    }*/
-                new RecyclerViewSwipeDecorator.Builder(homeActivity, c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addBackgroundColor(ContextCompat.getColor(homeActivity, R.color.colorAccent))
-                        .addActionIcon(R.drawable.start_timer)
-                        .addSwipeRightBackgroundColor(Color.RED)
+                    }
+                /*new RecyclerViewSwipeDecorator.Builder(homeActivity, c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(getResources().getColor(R.color.grey_bg))
+
+                        .addSwipeLeftBackgroundColor(getResources().getColor(R.color.colorAccent))
                         .addSwipeRightLabel("STOP")
                         .addSwipeRightBackgroundColor(Color.GREEN)
                         .addSwipeLeftLabel("START")
                         .create()
-                        .decorate();
+                        .decorate();*/
 
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX/3, dY, actionState, isCurrentlyActive);
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                if (direction == ItemTouchHelper.RIGHT) {
+                if (direction == ItemTouchHelper.LEFT) {
 
-                    Intent intent = new Intent(homeActivity, TimerService.class);
-                    getActivity().startService(intent);
+                    final int position = viewHolder.getAdapterPosition();
+                    usersListAdapter.startTimerService(position);
 
-                } else  if(direction == ItemTouchHelper.LEFT){
+
+                } else  if(direction == ItemTouchHelper.RIGHT){
 
                 }
             }
@@ -222,5 +230,40 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     @Override
     public void serviceError(Call call, Throwable throwable) {
         homeActivity.hideProgress();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().registerReceiver(usersListAdapter.br, new IntentFilter(TimerService.COUNTDOWN_BR));
+        Log.i(TAG, "Registered broacast receiver");
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(usersListAdapter.br);
+        Log.i(TAG, "Unregistered broacast receiver");
+    }
+
+    @Override
+    public void onStop() {
+        try {
+            getActivity().unregisterReceiver(usersListAdapter.br);
+        } catch (Exception e) {
+            // Receiver was probably already stopped in onPause()
+        }
+        super.onStop();
+    }
+    @Override
+    public void onDestroy() {
+//        getActivity().stopService(new Intent(homeActivity, BroadcastService.class));
+        Log.i(TAG, "Stopped service");
+        try {
+            getActivity().unregisterReceiver(usersListAdapter.br);
+        } catch (Exception e) {
+            // Receiver was probably already stopped in onPause()
+        }
+        super.onDestroy();
     }
 }

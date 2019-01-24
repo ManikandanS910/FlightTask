@@ -110,7 +110,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, API
                 homeActivity.hideProgress();
                 LoginResponseModel loginResponseModel = (LoginResponseModel) response.body();
                 Log.e("Message>>",""+loginResponseModel.getSuccessMessage());
-                SharedPrefs.putBoolean(context, "UserLoggedIn", true);
+
                 if(userName.getText().toString().trim().equals(loginResponseModel.getData().getUserId())) {
 
                     homeActivity.openFragment(new FlightListFragment(), false);
