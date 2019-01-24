@@ -23,7 +23,10 @@ import java.util.TimerTask;
 
 public class TimerService extends Service {
 
-    public int counter=0;
+    public int counter=20;
+
+    public static final String COUNTDOWN_BR = "com.myownprojects.manikandans.airlinestask.countdown_br";
+    Intent timerIntent = new Intent(COUNTDOWN_BR);
 
     @Override
     public void onCreate() {
@@ -70,10 +73,12 @@ public class TimerService extends Service {
         super.onDestroy();
         stoptimertask();
 
-        Intent broadcastIntent = new Intent();
-        broadcastIntent.setAction("restartservice");
-        broadcastIntent.setClass(this, RestartService.class);
-        this.sendBroadcast(broadcastIntent);
+        if(counter > 0) {
+            Intent broadcastIntent = new Intent();
+            broadcastIntent.setAction("restartservice");
+            broadcastIntent.setClass(this, RestartService.class);
+            this.sendBroadcast(broadcastIntent);
+        }
     }
 
 
@@ -84,10 +89,17 @@ public class TimerService extends Service {
         timer = new Timer();
         timerTask = new TimerTask() {
             public void run() {
-                Log.i("Count", "=========  "+ (counter++));
+                if(counter > 0) {
+                    Log.i("Count", "=========  " + (counter--));
+                    timerIntent.putExtra("countdown", counter);
+                    sendBroadcast(timerIntent);
+                } else {
+                    stopSelf();
+                }
             }
         };
         timer.schedule(timerTask, 1000, 1000); //
+
     }
 
     public void stoptimertask() {

@@ -14,11 +14,12 @@ import android.support.annotation.VisibleForTesting;
 
 import com.myownprojects.manikandans.airlinestask.AppExecutors;
 import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
+import com.myownprojects.manikandans.airlinestask.utility.DateConverter;
 
 import java.util.List;
 
-@Database(entities = Datum.class, version = 1)
-//@TypeConverters(DateConverter.class)
+@Database(entities = Datum.class, version = 1, exportSchema = false)
+@TypeConverters(DateConverter.class)
 public abstract class FlightListDatabase extends RoomDatabase {
 
     public FlightListDao flightListDao;

@@ -2,11 +2,21 @@ package com.myownprojects.manikandans.airlinestask.ui.fragment;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,9 +26,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.myownprojects.manikandans.airlinestask.MainActivity;
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.db.FlightListDatabase;
 import com.myownprojects.manikandans.airlinestask.ui.HomeActivity;
+import com.myownprojects.manikandans.airlinestask.ui.SharedPrefs;
 import com.myownprojects.manikandans.airlinestask.ui.adapter.TopListAdapter;
 import com.myownprojects.manikandans.airlinestask.ui.adapter.UsersListAdapter;
 import com.myownprojects.manikandans.airlinestask.ui.api.APIClient;
@@ -26,11 +38,13 @@ import com.myownprojects.manikandans.airlinestask.ui.api.APIResult;
 import com.myownprojects.manikandans.airlinestask.ui.api.ConstantType;
 import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
 import com.myownprojects.manikandans.airlinestask.ui.model.TopListResponse;
+import com.myownprojects.manikandans.airlinestask.utility.TimerService;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -53,6 +67,8 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     private List<Datum> topListModelList;
     private Paint p = new Paint();
 
+    FlightListDatabase flightListDatabase;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -64,6 +80,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         topListModelList = new ArrayList<>();
+        flightListDatabase = FlightListDatabase.getInstance(context);
     }
 
     @Nullable
@@ -75,7 +92,11 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
 //        usersList = view.findViewById(R.id.user_tag_list);
         flightList = view.findViewById(R.id.flight_list);
 
-        flightListAPI();
+        Log.e("UserLoggedIn", ""+SharedPrefs.getBoolean(context, "UserLoggedIn"));
+        if(!SharedPrefs.getBoolean(context, "UserLoggedIn"))
+            flightListAPI();
+        else
+            populateUIFromDB();
 
         return view;
     }
@@ -85,56 +106,45 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         new APIClient(context, this, null, ConstantType.FLIGHT_LIST, null);
     }
 
-    @Override
-    public void onClick(View v) {
+    private void populateUIFromDB(){
+        List<Datum> datumList = flightListDatabase.flightListDao().getAll();
+
+        Log.e("Size in table", "---"+datumList.size());
+        setRecyclerViewAdapterData(datumList);
 
     }
 
-    @Override
-    public void serviceResult(ConstantType constantType, Response response) {
-        TopListResponse topListResponse = (TopListResponse) response.body();
-        if(topListResponse != null && topListResponse.getCount() > 0 && topListResponse.getData().size() > 0) {
+    private void setRecyclerViewAdapterData(List<Datum> datumList){
+        usersListAdapter = new UsersListAdapter(context, datumList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        flightList.setLayoutManager(mLayoutManager);
+        flightList.setItemAnimator(new DefaultItemAnimator());
+        flightList.setAdapter(usersListAdapter);
 
-//            FlightListDatabase db = Room.databaseBuilder(context,FlightListDatabase.class, "user_db").allowMainThreadQueries().build();
+//        Log.e("List>>", ""+topListResponse.getSuccessMessage());
 
-            FlightListDatabase flightListDatabase = FlightListDatabase.getInstance(context);
-            flightListDatabase.flightListDao().insertAll(topListResponse.getData());
+        topListAdapter = new TopListAdapter(context, datumList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
+        topList.setLayoutManager(layoutManager);
+        topList.setItemAnimator(new DefaultItemAnimator());
+        topList.setAdapter(topListAdapter);
 
-            List<Datum> datumList = flightListDatabase.flightListDao().getAll();
+        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-            Log.e("Size in table", "---"+datumList.size());
-
-
-            usersListAdapter = new UsersListAdapter(context, topListResponse.getData());
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
-            flightList.setLayoutManager(mLayoutManager);
-            flightList.setItemAnimator(new DefaultItemAnimator());
-            flightList.setAdapter(usersListAdapter);
-
-            Log.e("List>>", ""+topListResponse.getSuccessMessage());
-
-            topListAdapter = new TopListAdapter(context, topListResponse.getData());
-            RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            topList.setLayoutManager(layoutManager);
-            topList.setItemAnimator(new DefaultItemAnimator());
-            topList.setAdapter(topListAdapter);
-
-            ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0,  ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-                @Override
-                public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                    return false;
-                }
-
-                @Override
+                /*@Override
                 public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
                     super.clearView(recyclerView, viewHolder);
 
-                }
+                }*/
 
-                /*@Override
-                public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            @Override
+            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
 
-                    Bitmap icon;
+                    /*Bitmap icon;
                     if(actionState == ItemTouchHelper.ACTION_STATE_SWIPE){
 
                         View itemView = viewHolder.itemView;
@@ -156,44 +166,58 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
                             RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
                             c.drawBitmap(icon,null,icon_dest,p);
                         }
-                    }
-                    super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-                }*/
+                    }*/
+                new RecyclerViewSwipeDecorator.Builder(homeActivity, c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addBackgroundColor(ContextCompat.getColor(homeActivity, R.color.colorAccent))
+                        .addActionIcon(R.drawable.start_timer)
+                        .addSwipeRightBackgroundColor(Color.RED)
+                        .addSwipeRightLabel("STOP")
+                        .addSwipeRightBackgroundColor(Color.GREEN)
+                        .addSwipeLeftLabel("START")
+                        .create()
+                        .decorate();
 
-                @Override
-                public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                    if (direction == ItemTouchHelper.RIGHT) {
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
 
-                        startTimer(5);
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                if (direction == ItemTouchHelper.RIGHT) {
 
-                    } else  if(direction == ItemTouchHelper.LEFT){
+                    Intent intent = new Intent(homeActivity, TimerService.class);
+                    getActivity().startService(intent);
 
-                    }
+                } else  if(direction == ItemTouchHelper.LEFT){
+
                 }
-            };
-            ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
-            itemTouchHelper.attachToRecyclerView(flightList);
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
+        itemTouchHelper.attachToRecyclerView(flightList);
+    }
+
+    @Override
+    public void onClick(View v) {
+
+    }
+
+    @Override
+    public void serviceResult(ConstantType constantType, Response response) {
+        TopListResponse topListResponse = (TopListResponse) response.body();
+        if(topListResponse != null && topListResponse.getCount() > 0 && topListResponse.getData().size() > 0) {
+
+//            FlightListDatabase db = Room.databaseBuilder(context,FlightListDatabase.class, "user_db").allowMainThreadQueries().build();
+
+            flightListDatabase.flightListDao().insertAll(topListResponse.getData());
+
+            setRecyclerViewAdapterData(topListResponse.getData());
+
 
             homeActivity.hideProgress();
 
         }
     }
 
-    private void startTimer(int noOfMinutes) {
-        new CountDownTimer(noOfMinutes, 1000) {
-            public void onTick(long millisUntilFinished) {
-                long millis = millisUntilFinished;
-
-                String hms = String.format("%02d:%02d", TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)), TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
-                usersListAdapter.setTime(hms);
-
-            }
-            public void onFinish() {
-                usersListAdapter.setTime("Task completed!!");
-            }
-        }.start();
-
-    }
 
     @Override
     public void serviceError(Call call, Throwable throwable) {

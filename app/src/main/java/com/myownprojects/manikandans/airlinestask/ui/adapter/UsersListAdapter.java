@@ -52,7 +52,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
 
 //        start_countDown("5", "0", holder.duration);
 
-        holder.bind();
+//        holder.bind();
 
     }
 

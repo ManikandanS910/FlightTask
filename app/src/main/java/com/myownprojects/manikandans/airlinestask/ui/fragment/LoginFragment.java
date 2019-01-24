@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.ui.HomeActivity;
+import com.myownprojects.manikandans.airlinestask.ui.SharedPrefs;
 import com.myownprojects.manikandans.airlinestask.ui.api.APIClient;
 import com.myownprojects.manikandans.airlinestask.ui.api.APIResult;
 import com.myownprojects.manikandans.airlinestask.ui.api.ConstantType;
@@ -109,12 +110,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener, API
                 homeActivity.hideProgress();
                 LoginResponseModel loginResponseModel = (LoginResponseModel) response.body();
                 Log.e("Message>>",""+loginResponseModel.getSuccessMessage());
-
+                SharedPrefs.putBoolean(context, "UserLoggedIn", true);
                 if(userName.getText().toString().trim().equals(loginResponseModel.getData().getUserId())) {
 
-                    homeActivity.openFragment(new FlightListFragment(), true);
+                    homeActivity.openFragment(new FlightListFragment(), false);
                 } else {
-                    Snackbar snackbar = Snackbar.make(signIn, "Enter valid User ID", Snackbar.LENGTH_LONG);
+                    Snackbar snackbar = Snackbar.make(getView(), "Enter valid User ID", Snackbar.LENGTH_LONG);
                     snackbar.show();
                 }
 

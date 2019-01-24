@@ -6,13 +6,16 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.myownprojects.manikandans.airlinestask.R;
+import com.myownprojects.manikandans.airlinestask.ui.fragment.FlightListFragment;
 import com.myownprojects.manikandans.airlinestask.ui.fragment.LoginFragment;
+import com.myownprojects.manikandans.airlinestask.ui.fragment.TimerFragment;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -27,7 +30,12 @@ public class HomeActivity extends AppCompatActivity {
 
         mGson = new Gson();
 
-        openFragment(new LoginFragment(), false);
+        Log.e("UserLoggedIn", ""+SharedPrefs.getBoolean(this, "UserLoggedIn"));
+        if(SharedPrefs.getBoolean(this, "UserLoggedIn")){
+            openFragment(new FlightListFragment(), false);
+        } else {
+            openFragment(new LoginFragment(), false);
+        }
 
     }
 

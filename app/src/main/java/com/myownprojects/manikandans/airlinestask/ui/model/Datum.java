@@ -106,52 +106,52 @@ public class Datum {
     @SerializedName("taskStatusId")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskStatusId;
+    private String taskStatusId;
     @ColumnInfo(name ="taskActualStartTime")
     @SerializedName("taskActualStartTime")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskActualStartTime;
+    private String taskActualStartTime;
     @ColumnInfo(name ="taskActualEndTime")
     @SerializedName("taskActualEndTime")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskActualEndTime;
+    private String taskActualEndTime;
     @ColumnInfo(name ="taskModifiedStartTime")
     @SerializedName("taskModifiedStartTime")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskModifiedStartTime;
+    private String taskModifiedStartTime;
     @ColumnInfo(name ="taskModifiedEndTime")
     @SerializedName("taskModifiedEndTime")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskModifiedEndTime;
+    private String taskModifiedEndTime;
     @ColumnInfo(name ="taskDelayCodeId")
     @SerializedName("taskDelayCodeId")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskDelayCodeId;
+    private String taskDelayCodeId;
     @ColumnInfo(name ="taskDelayNumericCode")
     @SerializedName("taskDelayNumericCode")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskDelayNumericCode;
+    private String taskDelayNumericCode;
     @ColumnInfo(name ="taskDelayAlphabeticCode")
     @SerializedName("taskDelayAlphabeticCode")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskDelayAlphabeticCode;
+    private String taskDelayAlphabeticCode;
     @ColumnInfo(name ="taskDelayCodeDescription")
     @SerializedName("taskDelayCodeDescription")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskDelayCodeDescription;
+    private String taskDelayCodeDescription;
     @ColumnInfo(name ="taskDelayReason")
     @SerializedName("taskDelayReason")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object taskDelayReason;
+    private String taskDelayReason;
     @ColumnInfo(name ="actualArrivalTime")
     @SerializedName("actualArrivalTime")
     @Expose
@@ -168,12 +168,12 @@ public class Datum {
     @ColumnInfo(name ="ataWeb")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object ataWeb;
+    private String ataWeb;
     @ColumnInfo(name ="atdWeb")
     @SerializedName("atdWeb")
     @Expose
     @TypeConverters(DateConverter.class)
-    private Object atdWeb;
+    private String atdWeb;
 
     public String getId() {
         return id;
@@ -351,83 +351,83 @@ public class Datum {
         this.optional = optional;
     }
 
-    public Object getTaskStatusId() {
+    public String getTaskStatusId() {
         return taskStatusId;
     }
 
-    public void setTaskStatusId(Object taskStatusId) {
+    public void setTaskStatusId(String taskStatusId) {
         this.taskStatusId = taskStatusId;
     }
 
-    public Object getTaskActualStartTime() {
+    public String getTaskActualStartTime() {
         return taskActualStartTime;
     }
 
-    public void setTaskActualStartTime(Object taskActualStartTime) {
+    public void setTaskActualStartTime(String taskActualStartTime) {
         this.taskActualStartTime = taskActualStartTime;
     }
 
-    public Object getTaskActualEndTime() {
+    public String getTaskActualEndTime() {
         return taskActualEndTime;
     }
 
-    public void setTaskActualEndTime(Object taskActualEndTime) {
+    public void setTaskActualEndTime(String taskActualEndTime) {
         this.taskActualEndTime = taskActualEndTime;
     }
 
-    public Object getTaskModifiedStartTime() {
+    public String getTaskModifiedStartTime() {
         return taskModifiedStartTime;
     }
 
-    public void setTaskModifiedStartTime(Object taskModifiedStartTime) {
+    public void setTaskModifiedStartTime(String taskModifiedStartTime) {
         this.taskModifiedStartTime = taskModifiedStartTime;
     }
 
-    public Object getTaskModifiedEndTime() {
+    public String getTaskModifiedEndTime() {
         return taskModifiedEndTime;
     }
 
-    public void setTaskModifiedEndTime(Object taskModifiedEndTime) {
+    public void setTaskModifiedEndTime(String taskModifiedEndTime) {
         this.taskModifiedEndTime = taskModifiedEndTime;
     }
 
-    public Object getTaskDelayCodeId() {
+    public String getTaskDelayCodeId() {
         return taskDelayCodeId;
     }
 
-    public void setTaskDelayCodeId(Object taskDelayCodeId) {
+    public void setTaskDelayCodeId(String taskDelayCodeId) {
         this.taskDelayCodeId = taskDelayCodeId;
     }
 
-    public Object getTaskDelayNumericCode() {
+    public String getTaskDelayNumericCode() {
         return taskDelayNumericCode;
     }
 
-    public void setTaskDelayNumericCode(Object taskDelayNumericCode) {
+    public void setTaskDelayNumericCode(String taskDelayNumericCode) {
         this.taskDelayNumericCode = taskDelayNumericCode;
     }
 
-    public Object getTaskDelayAlphabeticCode() {
+    public String getTaskDelayAlphabeticCode() {
         return taskDelayAlphabeticCode;
     }
 
-    public void setTaskDelayAlphabeticCode(Object taskDelayAlphabeticCode) {
+    public void setTaskDelayAlphabeticCode(String taskDelayAlphabeticCode) {
         this.taskDelayAlphabeticCode = taskDelayAlphabeticCode;
     }
 
-    public Object getTaskDelayCodeDescription() {
+    public String getTaskDelayCodeDescription() {
         return taskDelayCodeDescription;
     }
 
-    public void setTaskDelayCodeDescription(Object taskDelayCodeDescription) {
+    public void setTaskDelayCodeDescription(String taskDelayCodeDescription) {
         this.taskDelayCodeDescription = taskDelayCodeDescription;
     }
 
-    public Object getTaskDelayReason() {
+    public String getTaskDelayReason() {
         return taskDelayReason;
     }
 
-    public void setTaskDelayReason(Object taskDelayReason) {
+    public void setTaskDelayReason(String taskDelayReason) {
         this.taskDelayReason = taskDelayReason;
     }
 
@@ -455,19 +455,19 @@ public class Datum {
         this.taskSkipped = taskSkipped;
     }
 
-    public Object getAtaWeb() {
+    public String getAtaWeb() {
         return ataWeb;
     }
 
-    public void setAtaWeb(Object ataWeb) {
+    public void setAtaWeb(String ataWeb) {
         this.ataWeb = ataWeb;
     }
 
-    public Object getAtdWeb() {
+    public String getAtdWeb() {
         return atdWeb;
     }
 
-    public void setAtdWeb(Object atdWeb) {
+    public void setAtdWeb(String atdWeb) {
         this.atdWeb = atdWeb;
     }
 }

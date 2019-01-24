@@ -16,13 +16,13 @@ import java.util.List;
 public interface FlightListDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(FlightListTableResponse flightListTableResponse);
+    void insert(Datum datum);
 
     @Update
-    void update(FlightListTableResponse flightListTableResponse);
+    void update(Datum datum);
 
     @Delete
-    void delete(FlightListTableResponse flightListTableResponse);
+    void delete(Datum datum);
     @Query("SELECT * FROM flight_list_db")
     List<Datum> getAll();
 
