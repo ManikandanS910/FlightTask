@@ -1,5 +1,6 @@
 package com.myownprojects.manikandans.airlinestask.utility;
 
+import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -8,7 +9,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
+import android.os.Looper;
+import android.os.Message;
+import android.os.Process;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
@@ -28,9 +35,46 @@ public class TimerService extends Service {
     public static final String COUNTDOWN_BR = "com.myownprojects.manikandans.airlinestask.countdown_br";
     Intent timerIntent = new Intent(COUNTDOWN_BR);
 
+    /*public TimerService(){
+        super("TimerService");
+    }*/
+
+    private Looper mServiceLooper;
+    private ServiceHandler mServiceHandler;
+
+    // Handler that receives messages from the thread
+    private final class ServiceHandler extends Handler {
+        public ServiceHandler(Looper looper) {
+            super(looper);
+        }
+        @Override
+        public void handleMessage(Message msg) {
+            // Normally we would do some work here, like download a file.
+            // For our sample, we just sleep for 5 seconds.
+            try {
+//                Thread.sleep(5000);
+                startTimer();
+            } catch (Exception e) {
+                // Restore interrupt status.
+                Thread.currentThread().interrupt();
+            }
+            // Stop the service using the startId, so that we don't stop
+            // the service in the middle of handling another job
+//            stopSelf(msg.arg1);
+        }
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        HandlerThread thread = new HandlerThread("ServiceStartArguments",
+                Process.THREAD_PRIORITY_BACKGROUND);
+        thread.start();
+
+        // Get the HandlerThread's Looper and use it for our Handler
+        mServiceLooper = thread.getLooper();
+        mServiceHandler = new ServiceHandler(mServiceLooper);
 
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O)
             startMyOwnForeground();
@@ -64,8 +108,18 @@ public class TimerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        counter=(long) intent.getExtras().get("startTime");
-        startTimer();
+        Bundle bundle = intent.getExtras();
+        if (bundle != null)
+        {
+            counter=(long) bundle.get("startTime");
+//            name.setText(" "+bundle.getString("name"));
+        }
+//        counter=(long) intent.getExtras().get("startTime");
+        Message msg = mServiceHandler.obtainMessage();
+        msg.arg1 = startId;
+        mServiceHandler.sendMessage(msg);
+
+//        startTimer();
         return START_STICKY;
     }
 
@@ -116,4 +170,12 @@ public class TimerService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
+
+    /*@Override
+    protected void onHandleIntent(@Nullable Intent intent) {
+        counter = intent.getLongExtra("startTime", 0);
+        Log.e("startTimeStr", ""+counter);
+//        startTimer();
+
+    }*/
 }

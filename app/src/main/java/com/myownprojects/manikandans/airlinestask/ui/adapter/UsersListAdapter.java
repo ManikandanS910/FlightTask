@@ -41,6 +41,10 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
 
     }
 
+    public UsersListAdapter(Context context){
+        this.context = context;
+    }
+
     @Override
     public UsersViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.flight_list_item, parent, false);
@@ -52,15 +56,16 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
 
         this.holder = holder;
         this.position = position;
+        holder.itemView.setTag(position);
         holder.taskName.setText(flightListData.get(position).getTaskName());
         holder.duration.setText(""+ flightListData.get(position).getActivityStartTime());
         holder.passengerName.setText(flightListData.get(position).getName());
-//        holder.swipeToSkip.setText(flightListData.get(position).getTaskName());
 
-//        start_countDown("5", "0", holder.duration);
+    }
 
-//        holder.bind();
-
+    @Override
+    public int getItemViewType(int position) {
+        return position;
     }
 
     public interface OnItemClickListener {
@@ -81,14 +86,12 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         intent.putExtra("startTime", TimeUnit.MINUTES.toMillis(flightListData.get(position).getActivityStartTime()));
         context.startService(intent);
 
-
-
     }
 
     public BroadcastReceiver br = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            updateGUI(intent); // or whatever method used to update your GUI fields
+            updateGUI(intent);
         }
     };
 
@@ -101,102 +104,11 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
                     TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                             TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished))
             );
-            holder.duration.setText(durationText);
             Log.e("Time in adapter",durationText);
+            holder.duration.setText(durationText);
+
         }
     }
-
-    /*private void start_countDown(String start, String stop, final TextView txt_timeleft) {
-        try {
-            //Log.e("hetal",start+"....."+stop);
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-            Calendar start_date = Calendar.getInstance();
-            start_date.setTime(format.parse(start));
-
-            Calendar end_date = Calendar.getInstance();
-            end_date.setTime(format.parse(stop));
-
-            final Calendar today = Calendar.getInstance();
-            CountDownTimer timer;
-
-            txt_timeleft.setTextColor(Color.DKGRAY);
-            if(today.before(start_date)){
-//                txt_timeleft.setTextColor(context.getResources().getColor(R.color.red));
-//                holder.duration.setText(context.getString(R.string.auction_not_start));
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(1000); //You can manage the time of the blink with this parameter
-                anim.setStartOffset(20);
-                anim.setRepeatMode(Animation.REVERSE);
-                anim.setRepeatCount(Animation.INFINITE);
-                txt_timeleft.startAnimation(anim);
-                return;
-            }
-            if (!today.before(end_date)) {
-
-//                txt_timeleft.setTextColor(context.getResources().getColor(R.color.red));
-//                txt_timeleft.setText(context.getString(R.string.time_out));
-                Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                anim.setDuration(1000); //You can manage the time of the blink with this parameter
-                anim.setStartOffset(20);
-                anim.setRepeatMode(Animation.REVERSE);
-                anim.setRepeatCount(Animation.INFINITE);
-                txt_timeleft.startAnimation(anim);
-                return;
-            }
-
-            timer = new CountDownTimer(end_date.getTimeInMillis(), 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.setTimeInMillis(millisUntilFinished);
-
-                    long diff = calendar.getTimeInMillis() - today.getTimeInMillis();
-
-                    long seconds = diff / 1000 % 60;
-                    long minutes = diff / (60 * 1000) % 60;
-                    long hours = diff / (60 * 60 * 1000) % 24;
-                    //long days = (int) diff / (24 * 60 * 60 * 1000);
-                    long days = TimeUnit.MILLISECONDS.toDays(diff);
-
-
-                    String left = "";
-                    if (days > 0)
-                        left += days + " ,";
-                    if (hours > 0)
-                        left += hours + " ,";
-                    if (minutes > 0)
-                        left += minutes + " ,";
-
-                    left += seconds + " ";
-
-                    final String finalLeft = left;
-
-
-                    if (finalLeft.equals("0") || finalLeft.contains("-")) {
-//                        txt_timeleft.setText(context.getString(R.string.time_out));
-//                        txt_timeleft.setTextColor(context.getResources().getColor(R.color.red));
-                        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-                        anim.setDuration(1000); //You can manage the time of the blink with this parameter
-                        anim.setStartOffset(20);
-                        anim.setRepeatMode(Animation.REVERSE);
-                        anim.setRepeatCount(Animation.INFINITE);
-                        txt_timeleft.startAnimation(anim);
-                    } else
-                        txt_timeleft.setText(finalLeft);
-                }
-
-                @Override
-                public void onFinish() {
-
-                }
-            };
-            timer.start();
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
-    }*/
 
     public class UsersViewHolder extends RecyclerView.ViewHolder {
 
@@ -216,15 +128,6 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
             swipeToSkip = itemView.findViewById(R.id.swipe_to_skip);
 
             customRunnable = new CustomRunnable(handler, duration, flightListData.get(position).getTaskDuration());
-        }
-
-        public void bind() {
-
-            handler.removeCallbacks(customRunnable);
-            customRunnable.holder = duration;
-            customRunnable.millisUntilFinished = 10000 * getAdapterPosition(); //Current time - received time
-            handler.postDelayed(customRunnable, 100);
-
         }
 
     }

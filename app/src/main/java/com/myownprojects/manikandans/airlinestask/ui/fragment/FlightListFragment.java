@@ -84,6 +84,7 @@ public class FlightListFragment extends Fragment implements View.OnClickListener
         super.onCreate(savedInstanceState);
         topListModelList = new ArrayList<>();
         flightListDatabase = FlightListDatabase.getInstance(context);
+        usersListAdapter = new UsersListAdapter(context);
     }
 
     @Nullable
