@@ -11,6 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
+import com.daimajia.swipe.SwipeLayout;
 import com.myownprojects.manikandans.airlinestask.R;
 import com.myownprojects.manikandans.airlinestask.ui.model.Datum;
 import com.myownprojects.manikandans.airlinestask.utility.CustomRunnable;
@@ -60,6 +63,38 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         holder.taskName.setText(flightListData.get(position).getTaskName());
         holder.duration.setText(""+ flightListData.get(position).getActivityStartTime());
         holder.passengerName.setText(flightListData.get(position).getName());
+
+        holder.swipeLayout.addSwipeListener(new SwipeLayout.SwipeListener() {
+            @Override
+            public void onStartOpen(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onOpen(SwipeLayout layout) {
+                YoYo.with(Techniques.Tada).duration(500).delay(100).playOn(layout.findViewById(R.id.trash));
+            }
+
+            @Override
+            public void onStartClose(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onClose(SwipeLayout layout) {
+
+            }
+
+            @Override
+            public void onUpdate(SwipeLayout layout, int leftOffset, int topOffset) {
+
+            }
+
+            @Override
+            public void onHandRelease(SwipeLayout layout, float xvel, float yvel) {
+
+            }
+        });
 
     }
 
@@ -116,6 +151,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
         TextView duration;
         TextView passengerName;
         TextView swipeToSkip;
+        SwipeLayout swipeLayout;
 
         CustomRunnable customRunnable;
 
@@ -126,6 +162,7 @@ public class UsersListAdapter extends RecyclerView.Adapter<UsersListAdapter.User
             duration = itemView.findViewById(R.id.duartion);
             passengerName = itemView.findViewById(R.id.passenger_name);
             swipeToSkip = itemView.findViewById(R.id.swipe_to_skip);
+            swipeLayout = itemView.findViewById(R.id.swipe);
 
             customRunnable = new CustomRunnable(handler, duration, flightListData.get(position).getTaskDuration());
         }
